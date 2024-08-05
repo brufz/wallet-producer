@@ -1,20 +1,38 @@
-Executar o docker-compose para subir o ambiente do kafka e zookeeper
+# Instruções para Executar o Ambiente
+### PRODUCER
 
-[//]: # (Caso o projeto nao rode em sua maquina, deve-se adicionar ao host o seguinte endereço:)
+### Rodar o container
+docker build -t producer-wallet . 
+docker run -d --name producer-wallet-container --network docker_default -p 8090:8090 producer-wallet
 
-[//]: # (127.0.0.1 kafka localhost localhost.localdomain localhost4 localhost4.localdomain4)
+### Swaggerr
+- http://localhost:8070/swagger-ui/index.html#
 
-[//]: # (::1 localhost localhost.localdomain localhost6 localhost6.localdomain6)
+**Exemplos de JSON para o corpo do POST - Producer Kafka:**
 
-Modificar o conteiner docker do docker-compose
-echo 'listeners=PLAINTEXT://kafka:9092' | tee -a /opt/bitnami/kafka/config/server.properties
+```json
+{
+  "cpf": "43693769800",
+  "amount": 100.00,
+  "transactionType": "ADICAO",
+  "transactionDate": "2023-10-10"
+}
 
-Para enviar mensagens a partir do console-producer
-kafka-console-producer --broker-list localhost:9092 --topic my-topic
+{
+  "cpf": "43693769800",
+  "amount": 10.00,
+  "transactionType": "COMPRA",
+  "transactionDate": "2023-10-10"
+}
 
-Exemplos de JSON para enviar ao kafka:
-{"idEvento": 1, "cpf":"43693769800", "amount": 100.00, "transactionType": "ADICAO", "transactionDate": "2023-07-21"}
-{"idEvento": 2, "cpf":"43693769800", "amount": 20.00, "transactionType": "ADICAO", "transactionDate": "2023-09-21"}
-{"idEvento": 3, "cpf":"43693769800", "amount": 100.50, "transactionType": "COMPRA", "transactionDate": "2023-11-21"}
-{"idEvento": 4, "cpf":"43693769800", "amount": 100.50, "transactionType": "ESTORNO", "transactionDate": "2024-01-21"}
-{"idEvento": 6, "cpf":"54366222086", "amount": 100.50, "transactionType": "ADICAO", "transactionDate": "2024-07-21"}
+CURL PRODUCER
+
+curl --location 'http://localhost.com:8070/wallet' \
+--header 'Content-Type: application/json' \
+--data '{
+  "cpf": "43693769800",
+  "amount": 1000.00,
+  "transactionType": "ADICAO",
+  "transactionDate": "2024-08-02"
+}
+'
